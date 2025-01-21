@@ -1,7 +1,12 @@
 // src/pages/Events/Events.jsx
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { getAllEvents, getAllClubs, createEvent, deleteEvent } from '../../services/mockApi';
+import {
+  getAllEvents,
+  getAllClubs,
+  createEvent,
+  deleteEvent,
+} from '../../services/mockApi';
 import EventForm from '../../components/forms/EventForm';
 import EditEventModal from './EditEventModal';
 
@@ -43,7 +48,11 @@ function Events() {
 
       {showCreateForm && (
         <FormWrapper>
-          <EventForm clubs={clubs} onSubmitEvent={handleCreateEvent} onCancel={() => setShowCreateForm(false)} />
+          <EventForm
+            clubs={clubs}
+            onSubmitEvent={handleCreateEvent}
+            onCancel={() => setShowCreateForm(false)}
+          />
         </FormWrapper>
       )}
 
@@ -53,33 +62,43 @@ function Events() {
             <th>ID</th>
             <th>Event Name</th>
             <th>Date Range</th>
-            <th>Clubs</th>
+            <th>Details</th>
             <th style={{ textAlign: 'right' }}>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {events.map((evt) => {
-            const participatingClubs = clubs.filter((c) => evt.clubIds.includes(c.id));
-            return (
-              <tr key={evt.id}>
-                <td>{evt.id}</td>
-                <td>
-                  <strong>{evt.name}</strong>
-                  <Desc>{evt.description}</Desc>
-                </td>
-                <td>
-                  {evt.startDate} ~ {evt.endDate}
-                </td>
-                <td>
-                  {participatingClubs.map((c) => c.name).join(', ') || 'No Clubs'}
-                </td>
-                <td style={{ textAlign: 'right' }}>
-                  <ActionButton onClick={() => setEditEventId(evt.id)}>Edit</ActionButton>
-                  <DeleteButton onClick={() => handleDelete(evt.id)}>Delete</DeleteButton>
-                </td>
-              </tr>
-            );
-          })}
+          {events.map((evt) => (
+            <tr key={evt.id}>
+              <td>{evt.id}</td>
+              <td>
+                <strong>{evt.name}</strong>
+                <Desc>{evt.description}</Desc>
+              </td>
+              <td>
+                {evt.startDate} ~ {evt.endDate}
+              </td>
+              <td>
+                <LineItemsWrapper>
+                  {evt.lineItems.map((li, idx) => {
+                    const club = clubs.find((c) => c.id === li.clubId);
+                    return (
+                      <LineItemBox key={idx}>
+                        <b>{club?.name} - {li.position}</b>
+                        <small>Candidate IDs: {li.candidateIds.join(', ')}</small>
+                      </LineItemBox>
+                    );
+                  })}
+                  {evt.lineItems.length === 0 && (
+                    <NoDetails>No positions/candidates.</NoDetails>
+                  )}
+                </LineItemsWrapper>
+              </td>
+              <td style={{ textAlign: 'right' }}>
+                <ActionButton onClick={() => setEditEventId(evt.id)}>Edit</ActionButton>
+                <DeleteButton onClick={() => handleDelete(evt.id)}>Delete</DeleteButton>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </Table>
 
@@ -102,17 +121,17 @@ export default Events;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-
-  h2 {
-    color: #2c3e50;
-    margin-bottom: 1rem;
-  }
 `;
 
 const HeaderRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  h2 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+  }
 `;
 
 const CreateButton = styled.button`
@@ -158,6 +177,33 @@ const Table = styled.table`
   }
 `;
 
+const Desc = styled.div`
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-top: 0.25rem;
+`;
+
+const LineItemsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+`;
+
+const LineItemBox = styled.div`
+  background: #ecf0f1;
+  padding: 0.4rem;
+  border-radius: 4px;
+  small {
+    display: block;
+    color: #555;
+  }
+`;
+
+const NoDetails = styled.div`
+  font-size: 0.85rem;
+  color: #7f8c8d;
+`;
+
 const ActionButton = styled.button`
   margin-right: 0.5rem;
   background-color: #3498db;
@@ -181,10 +227,4 @@ const DeleteButton = styled.button`
   &:hover {
     background-color: #c0392b;
   }
-`;
-
-const Desc = styled.div`
-  font-size: 0.9rem;
-  color: #7f8c8d;
-  margin-top: 0.25rem;
 `;

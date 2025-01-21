@@ -2,17 +2,13 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
-import { AuthProvider } from './context/AuthContext';
 
-// Components
+import { AuthProvider } from './context/AuthContext';
 import AdminSidebar from './components/admin/AdminSidebar';
 import AdminHeader from './components/admin/AdminHeader';
-
-// Routes
 import AdminRoutes from './routes/AdminRoutes';
 import ProtectedRoute from './routes/ProtectedRoute';
 
-// Pages
 import Login from './pages/Auth/Login';
 
 function App() {
@@ -20,16 +16,12 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <AppContainer>
-          {/* Sidebar: only show if authenticated (optional design choice) */}
           <AdminSidebar />
           <MainContainer>
             <AdminHeader />
             <ContentWrapper>
               <Routes>
-                {/* Public Route for Login */}
                 <Route path="/login" element={<Login />} />
-                
-                {/* Protected Admin Routes */}
                 <Route
                   path="/*"
                   element={
@@ -49,7 +41,7 @@ function App() {
 
 export default App;
 
-// ====== Styled Components ======
+// ===== Styled Components =====
 const AppContainer = styled.div`
   display: flex;
   height: 100vh;

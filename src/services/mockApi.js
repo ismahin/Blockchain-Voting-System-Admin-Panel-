@@ -1,6 +1,5 @@
 // src/services/mockApi.js
 
-// --- In-Memory Data ---
 let clubs = [
     {
       id: 1,
@@ -53,21 +52,22 @@ let clubs = [
   ];
   
   /**
-   * EVENTS: Admin can create, edit, delete, etc.
-   * For now, we store them in memory.
+   * EVENTS: now contain lineItems for dynamic clubs/positions/candidates
    */
   let events = [
     {
       id: 1,
       name: 'Spring 2025 Elections',
       description: 'Elections for all clubs in Spring 2025 semester',
-      startDate: '2025-04-01',  // Example date
+      startDate: '2025-04-01',
       endDate: '2025-04-10',
-      clubIds: [1, 2],
+      lineItems: [
+        { clubId: 1, position: 'President', candidateIds: [1] },
+      ],
     },
   ];
   
-  // ========== CLUBS API ==========
+  // ========== CLUBS ==========
   export function getAllClubs() {
     return Promise.resolve([...clubs]);
   }
@@ -91,7 +91,7 @@ let clubs = [
     return Promise.resolve(true);
   }
   
-  // ========== CANDIDATES API ==========
+  // ========== CANDIDATES ==========
   export function getAllCandidates() {
     return Promise.resolve([...candidates]);
   }
@@ -107,7 +107,7 @@ let clubs = [
     return Promise.resolve(newCandidate);
   }
   export function updateCandidate(id, updatedData) {
-    candidates = candidates.map((cand) => 
+    candidates = candidates.map((cand) =>
       cand.id === id ? { ...cand, ...updatedData } : cand
     );
     return Promise.resolve(candidates.find((cand) => cand.id === id));
@@ -117,7 +117,7 @@ let clubs = [
     return Promise.resolve(true);
   }
   
-  // ========== APPLICATIONS (FROM USERS) ==========
+  // ========== APPLICATIONS ==========
   export function getAllApplications() {
     return Promise.resolve([...applications]);
   }
@@ -133,7 +133,7 @@ let clubs = [
     return Promise.resolve(newApp);
   }
   export function updateApplication(id, updatedData) {
-    applications = applications.map((app) => 
+    applications = applications.map((app) =>
       app.id === id ? { ...app, ...updatedData } : app
     );
     return Promise.resolve(applications.find((app) => app.id === id));
@@ -143,24 +143,32 @@ let clubs = [
     return Promise.resolve(true);
   }
   
-  // ========== EVENTS API ==========
+  // ========== EVENTS ==========
   export function getAllEvents() {
     return Promise.resolve([...events]);
   }
-  export function createEvent({ name, description, startDate, endDate, clubIds }) {
+  export function createEvent({
+    name,
+    description,
+    startDate,
+    endDate,
+    lineItems,
+  }) {
     const newEvent = {
       id: events.length + 1,
       name,
       description,
       startDate,
       endDate,
-      clubIds,
+      lineItems: lineItems || [],
     };
     events.push(newEvent);
     return Promise.resolve(newEvent);
   }
   export function updateEvent(id, updatedData) {
-    events = events.map((evt) => (evt.id === id ? { ...evt, ...updatedData } : evt));
+    events = events.map((evt) =>
+      evt.id === id ? { ...evt, ...updatedData } : evt
+    );
     return Promise.resolve(events.find((e) => e.id === id));
   }
   export function deleteEvent(id) {

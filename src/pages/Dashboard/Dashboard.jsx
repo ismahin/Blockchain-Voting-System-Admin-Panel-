@@ -24,9 +24,8 @@ function Dashboard() {
 
   const loadEvents = async () => {
     const allEvents = await getAllEvents();
-    const now = new Date();
-
-    // Filter events whose startDate <= now <= endDate
+    const now = new Date(); // today's date/time
+  
     const ongoing = allEvents.filter((evt) => {
       const start = new Date(evt.startDate);
       const end = new Date(evt.endDate);

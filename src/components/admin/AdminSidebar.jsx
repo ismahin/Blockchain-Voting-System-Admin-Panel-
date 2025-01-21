@@ -21,7 +21,7 @@ function AdminSidebar() {
 
   return (
     <SidebarWrapper>
-      <SidebarHeader>My University</SidebarHeader>
+      <SidebarHeader>BUBT Vote-Chain</SidebarHeader>
       <NavList>
         <StyledNavLink 
           to="/"
